@@ -17,6 +17,7 @@
   }
 
   .row-info {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,6 +33,7 @@
   }
 
   .column {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,9 +61,61 @@
 
     &.selected {
       border: none;
-      outline: 2px solid #3c74ff;
+      outline: 2px solid $primary-color;
       z-index: 2;
     }
+  }
+
+  .col-resize,
+  .row-resize {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    z-index: 1;
+    background-color: $primary-color;
+    &.active,
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .col-resize {
+    top: 0;
+    width: 4px;
+
+    &.active,
+    &:hover {
+      cursor: col-resize;
+    }
+    &.active::after {
+      content: '';
+      display: block;
+      width: 1px;
+      height: 100vh;
+      margin: 0 auto;
+      background-color: inherit;
+    }
+  }
+
+  .row-resize {
+    left: 0;
+    height: 4px;
+
+    &.active,
+    &:hover {
+      cursor: row-resize;
+    }
+
+    &.active::after {
+      content: '';
+      display: block;
+      width: 100vw;
+      height: 1px;
+      margin: 1.5px 0 0;
+      background-color: inherit;
+    }
+
   }
 
 }
