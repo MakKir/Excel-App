@@ -12,7 +12,6 @@ class Dom {
     }
     return this.$el.outerHTML.trim()
   }
-
   clear() {
     this.html('')
     return this
@@ -34,6 +33,28 @@ class Dom {
       this.$el.appendChild(node)
     }
     return this
+  }
+  get data() {
+    return this.$el.dataset
+  }
+  css(styles = {}) {
+    Object.assign(this.$el.style, styles)
+    return this
+  }
+  findAll(selector) {
+    return this.$el.querySelectorAll(selector)
+  }
+  closest(selector) {
+    return $(this.$el.closest(selector))
+  }
+  addClass(className) {
+    return $(this.$el.classList.add(className))
+  }
+  removeClass(className) {
+    return $(this.$el.classList.remove(className))
+  }
+  getCoords() {
+    return this.$el.getBoundingClientRect()
   }
 }
 
