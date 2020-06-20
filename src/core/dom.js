@@ -12,8 +12,26 @@ class Dom {
     }
     return this.$el.outerHTML.trim()
   }
+  text(text) {
+    if (typeof text === 'string') {
+      this.$el.textContent = text
+      return this
+    }
+    return this.$el.textContent.trim()
+  }
+  value(text) {
+    if (typeof text === 'string') {
+      this.$el.value = text
+      return this
+    }
+    return this.$el.value.trim()
+  }
   clear() {
     this.html('')
+    return this
+  }
+  focus() {
+    this.$el.focus()
     return this
   }
   on(eventType, callback) {
@@ -35,11 +53,20 @@ class Dom {
     return this
   }
   get data() {
-    return this.$el.dataset
+    if (this.isNotEmpty()) {
+      return this.$el.dataset
+    }
+    return null
+  }
+  isNotEmpty() {
+    return !!this.$el
   }
   css(styles = {}) {
     Object.assign(this.$el.style, styles)
     return this
+  }
+  find(selector) {
+    return $(this.$el.querySelector(selector))
   }
   findAll(selector) {
     return this.$el.querySelectorAll(selector)
@@ -48,10 +75,12 @@ class Dom {
     return $(this.$el.closest(selector))
   }
   addClass(className) {
-    return $(this.$el.classList.add(className))
+    $(this.$el.classList.add(className))
+    return this
   }
   removeClass(className) {
-    return $(this.$el.classList.remove(className))
+    $(this.$el.classList.remove(className))
+    return this
   }
   getCoords() {
     return this.$el.getBoundingClientRect()
