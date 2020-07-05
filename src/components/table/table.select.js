@@ -4,7 +4,7 @@ import {isCell} from '@/components/table/table.functions';
 export function selectHandler(event) {
   const target = event.target
   const [firstRow, firstCol] = getRowAndCol($(target))
-  this.selection.select($(target))
+  this.selectCell($(target))
 
   document.onmousemove = e => {
     if (isCell(e) && e.target !== target) {
@@ -51,6 +51,6 @@ export function switchCellHandler(event) {
   event.preventDefault()
   const $cell = this.$root.find(`[data-id="${row}:${col}"]`)
   if ($cell.isNotEmpty()) {
-    this.selection.select($cell)
+    this.selectCell($cell)
   }
 }

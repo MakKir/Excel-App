@@ -1,9 +1,12 @@
 import {ExcelComponent} from '@core/ExcelComponent'
 import {createTable} from '@/components/table/table.template'
-import {resizeHandler} from '@/components/table/table.resize';
-import {TableSelection} from '@/components/table/TableSelection';
-import {shouldResize, isCell, shouldSwitchCell} from '@/components/table/table.functions';
-import {selectHandler, switchCellHandler} from '@/components/table/table.select';
+import {resizeHandler} from '@/components/table/table.resize'
+import {TableSelection} from '@/components/table/TableSelection'
+import {shouldResize, isCell, shouldSwitchCell} from '@/components/table/table.functions'
+import {selectHandler, switchCellHandler} from '@/components/table/table.select'
+import * as actions from '@/redux/actions'
+import {defaultStyles} from '@/constants'
+import {parse} from '@core/parse'
 
 export class Table extends ExcelComponent {
   static className = 'excel__table'
@@ -21,32 +24,68 @@ export class Table extends ExcelComponent {
     this.switchCellHandler = switchCellHandler.bind(this)
   }
   toHTML() {
-    return createTable()
+    return createTable(15, this.store.getState())
   }
   prepare() {
     this.selection = new TableSelection()
   }
+  getCurrent() {
+    return this.selection.current
+  }
+  updateTextInStore(current) {
+    this.$dispatch(actions.changeText({
+      id: current.data.id,
+      value: current.text()
+    }))
+  }
 
   onInput() {
-    const text = this.selection.current.text()
-    this.$emit('table:input', text)
+    const current = this.getCurrent()
+    this.updateTextInStore(current)
+  }
+
+  selectCell($cell) {
+    this.selection.select($cell)
+    const styles = $cell.getStyles(Object.keys(defaultStyles))
+    this.$dispatch(actions.changeStyles(styles))
   }
 
   init() {
     super.init()
     const $cell = this.$root.find('[data-id="0:0"]')
-    this.selection.select($cell)
-    this.selection.current = $cell
+    this.selectCell($cell)
     this.onInput()
-    this.$on('formula:input', data => this.selection.current.text(data))
-    this.$on('formula:enter', () => {
-      const current = this.selection.current
-      current.focus()
+    this.$on('formula:input', data => {
+      const current = this.getCurrent()
+      current.attr('data-value', data)
+      current.text(data)
+      this.updateTextInStore(current)
     })
+    this.$on('formula:enter', () => {
+      const current = this.getCurrent()
+      current.focus()
+      const text = parse(current.text())
+      current.text(text)
+    })
+    this.$on('toolbar:applyStyle', value => {
+      this.selection.applyStyle(value)
+      this.$dispatch(actions.applyStyle({
+        value,
+        ids: this.selection.selectedIds
+      }))
+    })
+  }
+  async resizeTable(event) {
+    try {
+      const data = await this.resizeHandler(event)
+      this.$dispatch(actions.tableResize(data))
+    } catch (e) {
+      console.warn('Resize error', e.message)
+    }
   }
   onMousedown(event) {
     if (shouldResize(event)) {
-      this.resizeHandler(event)
+      this.resizeTable(event)
     } else if (isCell(event)) {
       this.selectHandler(event)
       this.onInput()
