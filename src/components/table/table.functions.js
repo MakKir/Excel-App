@@ -8,7 +8,6 @@ export function isCell(event) {
 
 export function shouldSwitchCell(event) {
   const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Tab']
-  console.log(event.shiftKey)
   return keys.includes(event.key) && !event.shiftKey
 }
 
