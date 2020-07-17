@@ -63,9 +63,9 @@ export class Table extends ExcelComponent {
     })
     this.$on('formula:enter', () => {
       const current = this.getCurrent()
-      current.focus()
       const text = parse(current.text())
       current.text(text)
+      current.focusToEnd()
     })
     this.$on('toolbar:applyStyle', value => {
       this.selection.applyStyle(value)
