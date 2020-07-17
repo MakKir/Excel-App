@@ -34,6 +34,14 @@ class Dom {
     this.$el.focus()
     return this
   }
+  focusToEnd() {
+    const range = document.createRange()
+    const selection = window.getSelection()
+    range.selectNodeContents(this.$el)
+    range.collapse(false)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
   attr(name, value) {
     if (value) {
       this.$el.setAttribute(name, value)

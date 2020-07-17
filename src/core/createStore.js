@@ -6,9 +6,10 @@ export class Store {
   }
   subscribe(fn) {
     this.listeners.push(fn)
+    const self = this
     return {
       unsubscribe() {
-        this.listeners = this.listeners.filter(l => l !== fn)
+        self.listeners = self.listeners.filter(l => l !== fn)
       }
     }
   }
