@@ -8,16 +8,7 @@ const isProd = process.env.NODE_ENV === 'production'
 const isDev = !isProd
 const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`
 const jsLoaders = () => {
-  const loaders = [
-    {
-      loader: 'babel-loader',
-      options: {
-        // eslint-disable-next-line max-len
-        presets: ['@babel/preset-env'],
-        plugins: ['@babel/plugin-proposal-class-properties']
-      }
-    }
-  ]
+  const loaders = ['babel-loader']
 
   if (isDev) {
     loaders.push('eslint-loader')
